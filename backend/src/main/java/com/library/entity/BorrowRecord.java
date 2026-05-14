@@ -1,17 +1,11 @@
 package com.library.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "borrow_record")
 public class BorrowRecord {
@@ -44,4 +38,78 @@ public class BorrowRecord {
     @UpdateTimestamp
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
+    public BorrowRecord() {}
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
+
+    public LocalDateTime getBorrowTime() {
+        return borrowTime;
+    }
+
+    public void setBorrowTime(LocalDateTime borrowTime) {
+        this.borrowTime = borrowTime;
+    }
+
+    public LocalDateTime getDueTime() {
+        return dueTime;
+    }
+
+    public void setDueTime(LocalDateTime dueTime) {
+        this.dueTime = dueTime;
+    }
+
+    public LocalDateTime getReturnTime() {
+        return returnTime;
+    }
+
+    public void setReturnTime(LocalDateTime returnTime) {
+        this.returnTime = returnTime;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public LocalDateTime getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(LocalDateTime updatedTime) {
+        this.updatedTime = updatedTime;
+    }
 }
