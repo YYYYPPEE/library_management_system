@@ -1,12 +1,21 @@
 const API_BASE_URL = 'http://localhost:8081/api';
 
 function request(url, options = {}) {
+    const token = getToken();
+    const headers = {
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const defaultOptions = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers,
         ...options
     };
+    
     return fetch(`${API_BASE_URL}${url}`, defaultOptions)
         .then(response => response.json());
 }

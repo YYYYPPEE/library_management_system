@@ -11,6 +11,6 @@ public class TestController {
 
     @GetMapping("/test")
     public Result<String> test() {
-        return Result.success("项目启动成功！");
+        return Result.success("项目启动成功1");
     }
 }

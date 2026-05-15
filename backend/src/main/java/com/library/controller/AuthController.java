@@ -37,4 +37,9 @@ public class AuthController {
             return Result.error(e.getMessage());
         }
     }
+
+    @PostMapping("/logout")
+    public Result<String> logout() {
+        return Result.success("退出登录成功（请在客户端清除Token）");
+    }
 }
