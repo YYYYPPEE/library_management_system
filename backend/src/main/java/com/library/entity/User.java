@@ -7,7 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user")
+@Table(name = "library_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

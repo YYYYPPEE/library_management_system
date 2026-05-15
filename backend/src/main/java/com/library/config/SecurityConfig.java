@@ -36,6 +36,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
@@ -43,6 +44,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/demo/public").permitAll()
                         .requestMatchers("/api/books").permitAll()
                         .requestMatchers("/api/books/**").permitAll()
+                        .requestMatchers("/api/borrow/available-books").permitAll()
+                        .requestMatchers("/", "/index.html", "/pages/**", "/css/**", "/js/**", "/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
