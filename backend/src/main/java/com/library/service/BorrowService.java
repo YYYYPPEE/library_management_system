@@ -105,4 +105,16 @@ public class BorrowService {
                 .filter(book -> book.getStatus() == 0 && book.getAvailableStock() > 0)
                 .toList();
     }
+
+    // 检查并更新用户的逾期记录
+    public void checkAndUpdateOverdueRecords(Long userId) {
+        List<BorrowRecord> records = borrowRecordRepository.findByUserId(userId);
+        LocalDateTime now = LocalDateTime.now();
+        for (BorrowRecord record : records) {
+            if (record.getStatus() == 0 && now.isAfter(record.getDueTime())) {
+                record.setStatus(2);
+                borrowRecordRepository.save(record);
+            }
+        }
+    }
 }

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的借阅 - 图书管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .overdue-alert {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="bi bi-book"></i> 图书管理系统
+            </a>
+            <div class="navbar-nav ms-auto" id="navLinks">
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-journal-text"></i> 我的借阅</h2>
+        </div>
+
+        <!-- 逾期提醒 -->
+        <div id="overdueAlert" class="alert alert-danger d-none mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle"></i>
+            <strong>提醒：</strong> 您有逾期未还的图书，请尽快归还！
+        </div>
+
+        <!-- 借阅记录表格 -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>图书ID</th>
+                                <th>借阅时间</th>
+                                <th>应还时间</th>
+                                <th>归还时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="borrowTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">加载中...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // 检查登录状态
+        checkAuth();
+        // 渲染导航
+        renderNav();
+
+        // 获取状态标签
+        function getStatusBadge(status) {
+            switch(status) {
+                case 0:
+                    return '<span class="badge bg-warning">借阅中</span>';
+                case 1:
+                    return '<span class="badge bg-success">已归还</span>';
+                case 2:
+                    return '<span class="badge bg-danger">已逾期</span>';
+                default:
+                    return '<span class="badge bg-secondary">未知</span>';
+            }
+        }
+
+        // 加载借阅记录
+        async function loadBorrowRecords() {
+            try {
+                const response = await request('/borrow/my-records');
+                if (response.code === 200) {
+                    const records = response.data;
+                    const tbody = document.getElementById('borrowTableBody');
+
+                    // 检查是否有逾期记录
+                    const hasOverdue = records.some(r => r.status === 2);
+                    const overdueAlert = document.getElementById('overdueAlert');
+                    if (hasOverdue) {
+                        overdueAlert.classList.remove('d-none');
+                    } else {
+                        overdueAlert.classList.add('d-none');
+                    }
+
+                    if (records.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">暂无借阅记录</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = records.map(record => {
+                        const isOverdue = record.status === 2;
+                        return `
+                            <tr class="${isOverdue ? 'table-danger' : ''}">
+                                <td>${record.bookId}</td>
+                                <td>${new Date(record.borrowTime).toLocaleString('zh-CN')}</td>
+                                <td>${new Date(record.dueTime).toLocaleString('zh-CN')}</td>
+                                <td>${record.returnTime ? new Date(record.returnTime).toLocaleString('zh-CN') : '-'}</td>
+                                <td>${getStatusBadge(record.status)}</td>
+                                <td>
+                                    ${record.status === 0 || record.status === 2 ? 
+                                        `<button class="btn btn-sm btn-primary" onclick="returnBook(${record.id})">
+                                            <i class="bi bi-arrow-return-left"></i> 归还
+                                        </button>` : 
+                                        '-'}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    alert(response.message);
+                }
+            } catch (error) {
+                console.error('加载借阅记录失败:', error);
+                alert('加载借阅记录失败');
+            }
+        }
+
+        // 还书
+        async function returnBook(recordId) {
+            if (!confirm('确定要归还这本书吗？')) {
+                return;
+            }
+
+            try {
+                const response = await request(`/borrow/return/${recordId}`, {
+                    method: 'POST'
+                });
+                if (response.code === 200) {
+                    alert('归还成功！');
+                    loadBorrowRecords();
+                } else {
+                    alert(response.message);
+                }
+            } catch (error) {
+                console.error('归还失败:', error);
+                alert('归还失败');
+            }
+        }
+
+        // 页面加载时调用
+        loadBorrowRecords();
+    </script>
+</body>
+</html>
