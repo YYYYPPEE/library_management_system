@@ -38,7 +38,7 @@ public class UserService {
         user.setRealName(request.getRealName());
         user.setStudentNo(request.getStudentNo());
         user.setRole(request.getRole());
-        user.setStatus(0); // 0 = 正常状态
+        user.setStatus(1); // 1 = 正常状态
         user.setCreatedTime(LocalDateTime.now());
         user.setUpdatedTime(LocalDateTime.now());
 
@@ -76,7 +76,7 @@ public class UserService {
             }
         }
 
-        if (user.getStatus() == 1) { // 1 = 禁用状态
+        if (user.getStatus() == 0) { // 0 = 禁用状态
             throw new RuntimeException("账号已被禁用");
         }
 
