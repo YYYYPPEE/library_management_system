@@ -81,6 +81,8 @@ public class BorrowController {
             if (userId == null) {
                 return Result.error("请先登录");
             }
+            // 检查并更新逾期记录
+            borrowService.checkAndUpdateOverdueRecords(userId);
             List<BorrowRecord> records = borrowService.getUserBorrowRecords(userId);
             return Result.success(records, "获取成功");
         } catch (Exception e) {
