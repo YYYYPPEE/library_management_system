@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dev_test分支测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .branch-badge {
+            display: inline-block;
+            background-color: #9b59b6;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            color: #34495e;
+            margin-top: 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 70%;
+        }
+        .success {
+            color: #27ae60;
+        }
+        .info {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 dev_test分支测试页面</h1>
+        <div class="branch-badge">当前分支: dev_test</div>
+        
+        <p class="info">这是dev_test分支的独立测试页面，不会影响其他分支的功能！</p>
+
+        <div class="test-section">
+            <h3>1️⃣ Hello测试</h3>
+            <p>测试基础接口是否正常工作</p>
+            <button onclick="testHello()">执行测试</button>
+            <div id="hello-result" class="result-box" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2️⃣ 系统状态检查</h3>
+            <p>检查当前系统运行状态</p>
+            <button onclick="testStatus()">检查状态</button>
+            <div id="status-result" class="result-box" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3️⃣ Echo回显测试</h3>
+            <p>测试POST请求和数据回显</p>
+            <div class="input-group">
+                <input type="text" id="echo-input" placeholder="输入测试内容..." value="Hello dev_test!">
+            </div>
+            <button onclick="testEcho()">发送请求</button>
+            <div id="echo-result" class="result-box" style="display: none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 测试说明</h3>
+            <ul>
+                <li>本页面仅在dev_test分支可用</li>
+                <li>所有测试接口路径以/api/dev-test开头</li>
+                <li>不会影响dev_wby或main分支的核心功能</li>
+                <li>可以在此页面进行新功能的快速测试</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        async function testHello() {
+            const resultDiv = document.getElementById('hello-result');
+            try {
+                const response = await fetch('/api/dev-test/hello');
+                const data = await response.json();
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#27ae60';
+            } catch (error) {
+                resultDiv.innerHTML = '❌ 错误: ' + error.message;
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#e74c3c';
+            }
+        }
+
+        async function testStatus() {
+            const resultDiv = document.getElementById('status-result');
+            try {
+                const response = await fetch('/api/dev-test/status');
+                const data = await response.json();
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#27ae60';
+            } catch (error) {
+                resultDiv.innerHTML = '❌ 错误: ' + error.message;
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#e74c3c';
+            }
+        }
+
+        async function testEcho() {
+            const resultDiv = document.getElementById('echo-result');
+            const input = document.getElementById('echo-input').value;
+            try {
+                const response = await fetch('/api/dev-test/echo', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: input, timestamp: new Date().toISOString() })
+                });
+                const data = await response.json();
+                resultDiv.innerHTML = JSON.stringify(data, null, 2);
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#27ae60';
+            } catch (error) {
+                resultDiv.innerHTML = '❌ 错误: ' + error.message;
+                resultDiv.style.display = 'block';
+                resultDiv.style.color = '#e74c3c';
+            }
+        }
+    </script>
+</body>
+</html>
