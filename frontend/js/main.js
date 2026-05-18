@@ -1,5 +1,31 @@
 const API_BASE_URL = 'http://localhost:8081/api';
 
+// 主题管理
+function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+}
+
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    updateThemeIcon(theme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const themeBtn = document.getElementById('themeSwitchBtn');
+    if (themeBtn) {
+        themeBtn.innerHTML = theme === 'light' ? '🌙' : '☀️';
+        themeBtn.title = theme === 'light' ? '切换到夜间模式' : '切换到日间模式';
+    }
+}
+
 function request(url, options = {}) {
     const token = getToken();
     const headers = {
@@ -59,11 +85,17 @@ function checkAuth() {
 function renderNav() {
     const navLinks = document.getElementById('navLinks');
     const userInfo = getUserInfo();
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    const themeIcon = currentTheme === 'light' ? '🌙' : '☀️';
+    
     if (userInfo) {
         const isAdmin = userInfo.role === 1;
         navLinks.innerHTML = `
             <li class="nav-item">
-                <span class="nav-link text-white">欢迎, ${userInfo.realName}</span>
+                <button id="themeSwitchBtn" class="theme-switch-btn" onclick="toggleTheme()" title="切换到${currentTheme === 'light' ? '夜间' : '日间'}模式">${themeIcon}</button>
+            </li>
+            <li class="nav-item">
+                <span class="nav-link">欢迎, ${userInfo.realName}</span>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="books.html">图书列表</a>
@@ -85,6 +117,9 @@ function renderNav() {
         `;
     } else {
         navLinks.innerHTML = `
+            <li class="nav-item">
+                <button id="themeSwitchBtn" class="theme-switch-btn" onclick="toggleTheme()" title="切换到${currentTheme === 'light' ? '夜间' : '日间'}模式">${themeIcon}</button>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="books.html">图书列表</a>
             </li>
@@ -114,3 +149,6 @@ function getBasePath() {
     }
     return '';
 }
+
+// 页面加载时初始化主题
+document.addEventListener('DOMContentLoaded', initTheme);
