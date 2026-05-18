@@ -1,3 +1,4 @@
+
 package com.library.entity;
 
 import jakarta.persistence.*;
@@ -13,10 +14,10 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 20)
     private String title;
 
-    @Column(length = 100)
+    @Column(length = 20)
     private String author;
 
     @Column(length = 20, unique = true)
@@ -113,3 +114,4 @@ public class Book {
         this.updatedTime = updatedTime;
     }
 }
+

@@ -44,9 +44,11 @@
                     <li class="nav-item">
                         <span class="nav-link text-white">欢迎, ${userInfo.realName}</span>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/books.html">图书列表</a>
-                    </li>
+                    ${!isAdmin ? `
+                        <li class="nav-item">
+                            <a class="nav-link" href="pages/books.html">图书列表</a>
+                        </li>
+                    ` : ''}
                     <li class="nav-item">
                         <a class="nav-link" href="pages/my-borrows.html">我的借阅</a>
                     </li>
@@ -64,11 +66,13 @@
                 `;
                 welcomeMessage.textContent = `你好, ${userInfo.realName}! ${isAdmin ? '管理员' : '同学'}`;
                 actionButtons.innerHTML = `
-                    <a href="pages/books.html" class="btn btn-primary btn-lg">浏览图书</a>
+                    ${!isAdmin ? `
+                        <a href="pages/books.html" class="btn btn-primary btn-lg">浏览图书</a>
+                    ` : ''}
                     <a href="pages/my-borrows.html" class="btn btn-success btn-lg">我的借阅</a>
                     ${isAdmin ? `
-                        <a href="pages/books.html" class="btn btn-outline-primary btn-lg">图书管理</a>
-                        <a href="pages/statistics.html" class="btn btn-outline-success btn-lg">数据统计</a>
+                        <a href="pages/books.html" class="btn btn-primary btn-lg">图书管理</a>
+                        <a href="pages/statistics.html" class="btn btn-success btn-lg">数据统计</a>
                     ` : ''}
                 `;
             } else {
